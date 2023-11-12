@@ -2,3 +2,4 @@
 !.vscode/extensions.json
 .idea
 *.log
+result.tsx
