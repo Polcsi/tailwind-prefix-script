@@ -1,6 +1,6 @@
 // Import necessary modules and components from libraries
 import { ReactNode, Children } from "react";
-import { useMultiStepFormContext } from "./contexts/MultiStepFormContext";
+import { useGlobalContext } from "./contexts";
 import { AnimatePresence } from "framer-motion";
 
 // Define type for the MainContentProps passed to the component
@@ -11,15 +11,15 @@ type MainContentProps = {
 // MainContent is a functional component that represents a single step in a multi-step form
 const MainContent = ({ children }: MainContentProps) => {
   // Retrieve the activeStepIndex from the MultiStepFormContext
-  const { activeStepIndex } = useMultiStepFormContext();
+  const { activeIndex } = useGlobalContext();
 
-  // Return the child element at the activeStepIndex
+  // Return the child element at the activeIndex
   return (
     <div className="relative h-full w-full">
-      {/* AnimatePresence to handle step transitions */}
+      {/* AnimatePresence to handle transitions */}
       <AnimatePresence initial={false} mode="wait">
         {/* Cloning children and passing onComplete function */}
-        {Children.toArray(children)[activeStepIndex]}
+        {Children.toArray(children)[activeIndex]}
       </AnimatePresence>
     </div>
   );

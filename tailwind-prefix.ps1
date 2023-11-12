@@ -1,7 +1,9 @@
 param(
     [string]$folder = ".",
     [string]$prefix = "tw-",
-    [string]$extensions = "*.tsx"
+    [string]$extensions = "*.tsx",
+    [bool]$removePrefix = $false,
+    [string]$swapTo = ""
 )
 
 function Convert-ToPrefixedClass {
@@ -128,38 +130,61 @@ foreach ($file in $files) {
         Write-Host "SKIPEED - $path/$fileName" -ForegroundColor Yellow
         continue
     }
-    
-    Write-Host "$path/$fileName" -ForegroundColor Cyan
+
+    $contentWithPrefixedClasses = $content
 
     # Get all the classes from the file
     $tailwindClasses = [regex]::Matches($content, '(class|className)="([^"]*)"') | ForEach-Object { $_.Groups[2].Value -split ' ' }
 
-    $contentWithPrefixedClasses = $content
-
     # Create an array to track the classes that have been prefixed
     $prefixedClasses = @()
-    # Loop through the classes
-    foreach ($class in $tailwindClasses) {
-        # Check if the class has already been prefixed
-        if ($prefixedClasses -contains $class) {
-            # Write-Host "Skipping $class"
+
+    if ($removePrefix) {
+        # Check if at least on of the prefix exists to remove
+        if ($contentWithPrefixedClasses -notmatch "(class|className)=`"([^`"]*\b)$prefix([^`"]*)`"") {
+            Write-Host "PREFIX NOT FOUND - $path/$fileName" -ForegroundColor Yellow
             continue
         }
-        # Regular expression pattern to match special characters
-        $Pattern = "([\.\^\$\*\+\?\{\}\[\]\\\|\(\)])"
+    }
+    if ($swapTo.Length -gt 0) {
+        # Check if at least on of the prefix exists
+        if ($contentWithPrefixedClasses -notmatch "(class|className)=`"([^`"]*\b)$prefix([^`"]*)`"") {
+            Write-Host "PREFIX NOT FOUND - $path/$fileName" -ForegroundColor Yellow
+            continue
+        }
+        # Swap the prefix to the new prefix
+        $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "(class|className)=`"([^`"]*\b)$prefix([^`"]*)`"", "`$1=`"`$2$swapTo$3`""
+    }
+    else {
+        # Loop through the classes
+        foreach ($class in $tailwindClasses) {
+            # Check if the class has already been prefixed
+            if ($prefixedClasses -contains $class) {
+                continue
+            }
+            # Regular expression pattern to match special characters
+            $Pattern = "([\.\^\$\*\+\?\{\}\[\]\\\|\(\)])"
  
-        $escapedClass = $class -replace $Pattern, '\$1'
+            $escapedClass = $class -replace $Pattern, '\$1'
  
-        $prefixedClass = Convert-ToPrefixedClass -class $class
-        # $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "(class|className)=`"([^`"]*\b)$escapedClass\b([^`"]*)`"", "`$1=`"`$2$prefixedClass`$3`""
-        $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "$escapedClass", "$prefixedClass"
+            $prefixedClass = ""
+            if ($removePrefix) {
+                $prefixedClass = $class -replace $prefix, ""
+            }
+            else {
+                $prefixedClass = Convert-ToPrefixedClass -class $class
+            }
+            # $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "(class|className)=`"([^`"]*\b)$escapedClass\b([^`"]*)`"", "`$1=`"`$2$prefixedClass`$3`""
+            $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "$escapedClass", "$prefixedClass"
 
-        # Add the class to the array
-        $prefixedClasses += $class
+            # Add the class to the array
+            $prefixedClasses += $class
+        }
     }
 
+    Write-Host "$path/$fileName" -ForegroundColor Cyan
 
-    # $contentWithPrefixedClasses | Out-File -FilePath "test.tsx"
+    $contentWithPrefixedClasses | Out-File -FilePath "result.tsx"
 
     Set-Content -Path $file.FullName -Value $contentWithPrefixedClasses
 

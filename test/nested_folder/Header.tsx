@@ -1,32 +1,32 @@
 import { HiLightBulb, HiOutlineLightBulb } from "react-icons/hi";
 import { motion } from "framer-motion";
-import { useSingleFormElementContext } from "./contexts/SingleFormElementContext";
+import { useGlobalContext } from "./contexts";
 import { useHintContext } from "./hints/contexts/HintContext";
 
-type FormElementHeaderProps = {
+type HeaderProps = {
   title: string;
 };
 
-const FormElementHeader = ({ title }: FormElementHeaderProps) => {
-  const { isFormElementLoading, hints } = useSingleFormElementContext();
+const Header = ({ title }: HeaderProps) => {
+  const { isLoading, hints } = useGlobalContext();
   const { toggleHints, setToggleHints, setOpenedHints } = useHintContext();
 
   return (
-    <div className="SingleFormElementHeaderContainer grid gap-3">
+    <div className="SingleHeaderContainer grid gap-3">
       <div className="flex justify-between">
-        {isFormElementLoading ? (
+        {isLoading ? (
           <div role="status" className="w-full animate-pulse self-center">
             <div className="h-[33px] w-[260px] rounded-lg bg-gray-200 dark:bg-gray-700"></div>
             <span className="sr-only">Loading...</span>
           </div>
         ) : (
-          <h1 className="SingleFormElementHeaderText self-center text-2xl font-bold text-[#868686] group-hover:text-white">
+          <h1 className="SingleHeaderText self-center text-2xl font-bold text-[#868686] group-hover:text-white">
             {title}
           </h1>
         )}
 
         {hints ? (
-          isFormElementLoading ? (
+          isLoading ? (
             <div
               role="status"
               className="animate-pulse hover:bg-violet-600 active:bg-violet-700 focus:outline-none focus:ring focus:ring-violet-300"
@@ -67,4 +67,4 @@ const FormElementHeader = ({ title }: FormElementHeaderProps) => {
   );
 };
 
-export default FormElementHeader;
+export default Header;
