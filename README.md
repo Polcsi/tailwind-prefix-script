@@ -1,6 +1,12 @@
 # Tailwind prefix script
 
-This is a `powershell` script which iterate over the selected **directory** + **subdirectories** and add prefix to class names. There is also an option to **remove prefix** from class names.
+This is a `powershell` script which iterate over the selected **directory** + **subdirectories** and add prefix to class names. There are three function which you can use:
+
+- `Add prefix` Function
+- `Remove prefix` Function
+- `Swap prefix` Function
+
+> **Note:** The script will not prefix class names which are not in `class` or `className` attribute. **So it will not ruin rest of the code.**
 
 ## Table of contents
 
@@ -10,6 +16,7 @@ This is a `powershell` script which iterate over the selected **directory** + **
   - [Add prefix function](#add-prefix-function)
   - [Remove prefix function](#remove-prefix-function)
   - [Swap prefix function](#swap-prefix-function)
+  - [Custom class names](#custom-class-names)
 
 ## Properties
 
@@ -192,5 +199,16 @@ _Home.jsx_ after running script:
       Button
     </button>
   </section>
+</main>
+```
+
+### Custom class names
+
+The script will prefix all class names whithin `class` or `className` attribute. **You need to remove prefix manually from custom class names.**
+
+```html
+<main>
+  <h1>ts-Home</h1>
+  <section className="ts-CustomClass ts-h-[46px] ...">{...}</section>
 </main>
 ```

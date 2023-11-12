@@ -10,7 +10,7 @@ const Home = () => {
         </p>
         <button
           type="button"
-          className="rounded-full p-2 text-2xl text-main md:text-3xl -inset-1 -skew-y-3"
+          class="rounded-full p-2 text-2xl text-main md:text-3xl -inset-1 -skew-y-3"
         >
           Button
         </button>
