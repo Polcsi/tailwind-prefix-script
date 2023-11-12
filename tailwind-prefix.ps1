@@ -175,14 +175,12 @@ foreach ($file in $files) {
         else {
             $prefixedClass = Convert-ToPrefixedClass -class $class
         }
-        # $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "(class|className)=`"([^`"]*\b)$escapedClass\b([^`"]*)`"", "`$1=`"`$2$prefixedClass`$3`""
-        $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "$escapedClass", "$prefixedClass"
+        $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "(class|className)=`"([^`"]*)$escapedClass([^`"]*)`"", "`$1=`"`$2$prefixedClass`$3`""
 
         # Add the class to the array
         $prefixedClasses += $class
     }
     
-
     Write-Host "$path/$fileName" -ForegroundColor Cyan
 
     $contentWithPrefixedClasses | Out-File -FilePath "result.tsx"
