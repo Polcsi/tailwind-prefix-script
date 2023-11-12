@@ -146,41 +146,42 @@ foreach ($file in $files) {
             continue
         }
     }
-    if ($swapTo.Length -gt 0) {
+    if ($swapTo) {
         # Check if at least on of the prefix exists
         if ($contentWithPrefixedClasses -notmatch "(class|className)=`"([^`"]*\b)$prefix([^`"]*)`"") {
             Write-Host "PREFIX NOT FOUND - $path/$fileName" -ForegroundColor Yellow
             continue
         }
-        # Swap the prefix to the new prefix
-        $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "(class|className)=`"([^`"]*\b)$prefix([^`"]*)`"", "`$1=`"`$2$swapTo$3`""
     }
-    else {
-        # Loop through the classes
-        foreach ($class in $tailwindClasses) {
-            # Check if the class has already been prefixed
-            if ($prefixedClasses -contains $class) {
-                continue
-            }
-            # Regular expression pattern to match special characters
-            $Pattern = "([\.\^\$\*\+\?\{\}\[\]\\\|\(\)])"
- 
-            $escapedClass = $class -replace $Pattern, '\$1'
- 
-            $prefixedClass = ""
-            if ($removePrefix) {
-                $prefixedClass = $class -replace $prefix, ""
-            }
-            else {
-                $prefixedClass = Convert-ToPrefixedClass -class $class
-            }
-            # $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "(class|className)=`"([^`"]*\b)$escapedClass\b([^`"]*)`"", "`$1=`"`$2$prefixedClass`$3`""
-            $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "$escapedClass", "$prefixedClass"
 
-            # Add the class to the array
-            $prefixedClasses += $class
+    # Loop through the classes
+    foreach ($class in $tailwindClasses) {
+        # Check if the class has already been prefixed
+        if ($prefixedClasses -contains $class) {
+            continue
         }
+        # Regular expression pattern to match special characters
+        $Pattern = "([\.\^\$\*\+\?\{\}\[\]\\\|\(\)])"
+ 
+        $escapedClass = $class -replace $Pattern, '\$1'
+ 
+        $prefixedClass = ""
+        if ($removePrefix) {
+            $prefixedClass = $class -replace $prefix, ""
+        }
+        elseif ($swapTo -ne "") {
+            $prefixedClass = $class -replace $prefix, $swapTo
+        }
+        else {
+            $prefixedClass = Convert-ToPrefixedClass -class $class
+        }
+        # $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "(class|className)=`"([^`"]*\b)$escapedClass\b([^`"]*)`"", "`$1=`"`$2$prefixedClass`$3`""
+        $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace "$escapedClass", "$prefixedClass"
+
+        # Add the class to the array
+        $prefixedClasses += $class
     }
+    
 
     Write-Host "$path/$fileName" -ForegroundColor Cyan
 

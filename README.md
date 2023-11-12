@@ -9,6 +9,7 @@ This is a `powershell` script which iterate over the selected **directory** + **
 - [Examples](#examples)
   - [Add prefix function](#add-prefix-function)
   - [Remove prefix function](#remove-prefix-function)
+  - [Swap prefix function](#swap-prefix-function)
 
 ## Properties
 
@@ -18,6 +19,7 @@ This is a `powershell` script which iterate over the selected **directory** + **
 | -prefix       | string  |     _tw-_     | Prefix which will be added to class names           |
 | -extension    | string  |   _\*.tsx_    | File extension of tailwind css files                |
 | -removePrefix | boolean |   _$False_    | If true, script will remove prefix from class names |
+| swapTo        | string  |               | Prefix which will be replaced with new prefix       |
 
 > **Note:** If you want to prefix multiple file extensions, you can use comma separated list of extensions. For example: `*.tsx,*.jsx`
 
@@ -134,6 +136,58 @@ _Home.jsx_ after running script:
     <button
       type="button"
       className="rounded-full p-2 text-2xl text-main md:text-3xl -inset-1 -skew-y-3"
+    >
+      Button
+    </button>
+  </section>
+</main>
+```
+
+### Swap prefix function
+
+```powershell
+./tailwind-prefix.ps1 -prefix "ts-" -extensions "*.jsx" -folder "test" -swapTo "cl-"
+```
+
+_Home.jsx_ before running script:
+
+```html
+<main>
+  <h1>ts-Home</h1>
+  <section
+    className="ts-h-[46px] ts-w-[46px] ts-rounded-full ts-bg-gray-200 dark:ts-bg-gray-700 focus:invalid:ts-ring-pink-500"
+  >
+    <p
+      className="ts-h-[2px] ts-bg-[#F3EAEA] after:ts-content-['*'] after:ts-ml-0.5 after:ts-text-red-500"
+    >
+      Home page content
+    </p>
+    <button
+      type="button"
+      className="ts-rounded-full ts-p-2 ts-text-2xl ts-text-main md:ts-text-3xl -ts-inset-1 -ts-skew-y-3"
+    >
+      Button
+    </button>
+  </section>
+</main>
+```
+
+_Home.jsx_ after running script:
+
+```html
+<main>
+  <h1>ts-Home</h1>
+  <section
+    className="cl-h-[46px] cl-w-[46px] cl-rounded-full cl-bg-gray-200 dark:cl-bg-gray-700 focus:invalid:cl-ring-pink-500"
+  >
+    <p
+      className="cl-h-[2px] cl-bg-[#F3EAEA] after:cl-content-['*'] after:cl-ml-0.5 after:cl-text-red-500"
+    >
+      Home page content
+    </p>
+    <button
+      type="button"
+      className="cl-rounded-full cl-p-2 cl-text-2xl cl-text-main md:cl-text-3xl -cl-inset-1 -cl-skew-y-3"
     >
       Button
     </button>

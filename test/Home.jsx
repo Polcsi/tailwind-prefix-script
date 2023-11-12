@@ -4,13 +4,13 @@ const Home = () => {
   return (
     <main>
       <h1>ts-Home</h1>
-      <section className="h-[46px] w-[46px] rounded-full bg-gray-200 dark:bg-gray-700 focus:invalid:ring-pink-500">
-        <p className="h-[2px] bg-[#F3EAEA] after:content-['*'] after:ml-0.5 after:text-red-500">
+      <section className="cl-h-[46px] cl-w-[46px] cl-rounded-full cl-bg-gray-200 dark:cl-bg-gray-700 focus:invalid:cl-ring-pink-500">
+        <p className="cl-h-[2px] cl-bg-[#F3EAEA] after:cl-content-['*'] after:cl-ml-0.5 after:cl-text-red-500">
           Home page content
         </p>
         <button
           type="button"
-          className="rounded-full p-2 text-2xl text-main md:text-3xl -inset-1 -skew-y-3"
+          className="cl-rounded-full cl-p-2 cl-text-2xl cl-text-main md:cl-text-3xl -cl-inset-1 -cl-skew-y-3"
         >
           Button
         </button>
@@ -20,3 +20,24 @@ const Home = () => {
 };
 
 export default Home;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
