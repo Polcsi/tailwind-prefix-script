@@ -16,11 +16,20 @@ const MainContent = ({ children }: MainContentProps) => {
   // Return the child element at the activeIndex
   return (
     <div className="relative h-full w-full">
-      {/* AnimatePresence to handle transitions */}
-      <AnimatePresence initial={false} mode="wait">
-        {/* Cloning children and passing onComplete function */}
-        {Children.toArray(children)[activeIndex]}
-      </AnimatePresence>
+      <section
+        className={`${
+          activeIndex === 0
+            ? "bg-red-500 -top-0 hover:text-white"
+            : "bg-green-500 hover:text-gray-900"
+        } w-full h-full`}
+      >
+        {/* AnimatePresence to handle transitions */}
+        <AnimatePresence initial={false} mode="wait">
+          {/* Cloning children and passing onComplete function */}
+          {Children.toArray(children)[activeIndex]}
+        </AnimatePresence>
+        <span className="text-white"></span>
+      </section>
     </div>
   );
 };

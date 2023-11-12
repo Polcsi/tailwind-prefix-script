@@ -6,6 +6,16 @@ param(
     [string]$swapTo = ""
 )
 
+function Convert-ToEscapedClass {
+    param(
+        [string]$str
+    )
+    $Pattern = "([\.\^\$\*\+\?\{\}\[\]\\\|\(\)])"
+    $escapedStr = $str -replace $Pattern, '\$1'
+
+    return $escapedStr
+}
+
 function Convert-ToPrefixedClass {
     param(
         [string]$class
@@ -136,6 +146,18 @@ foreach ($file in $files) {
     # Get all the classes from the file
     $tailwindClasses = [regex]::Matches($content, '(class|className)="([^"]*)"') | ForEach-Object { $_.Groups[2].Value -split ' ' }
 
+    # Get conditionally added classes from this  className={`${isLoading ? "bg-red-500 -top-0 hover:text-white" : "bg-green-500 hover:text-gray-900"} w-full h-full`}
+    # $conditionalClasses += [regex]::Matches($content, '(class|className)={`([^`]*)`}') | ForEach-Object { 
+    #     # Get the classes that is between quotes
+    #     Write-Host $_.Groups[2].Value
+    #     $classes = [regex]::Matches($_.Groups[2].Value, '"([^"]*)"') | ForEach-Object { $_.Groups[1].Value -split ' ' }
+    #     # Get the classes that is beween backticks
+    #     $classes2 += [regex]::Matches($_.Groups[2].Value, '`([^`]*)`') | ForEach-Object { $_.Groups[1].Value -split ' ' }
+    #     Write-Host $classes2
+    #     return $classes
+    # }
+    # Write-Host $conditionalClasses
+
     # Create an array to track the classes that have been prefixed
     $prefixedClasses = @()
 
@@ -154,16 +176,26 @@ foreach ($file in $files) {
         }
     }
 
+    # Add prefix to the conditional classes if it's not empty
+    # if ($conditionalClasses.Length -ne 0) {
+    #     Write-Host "Conditional classes found" -ForegroundColor Green
+    #     foreach ($conditionalClass in $conditionalClasses) {
+    #         # Escape the class
+    #         $escapedClass = Convert-ToEscapedClass -str $conditionalClass
+    #         # Add prefix to the class
+    #         $prefixedClass = Convert-ToPrefixedClass -class $conditionalClass
+    #         # Replace the class with the prefixed class
+    #         $contentWithPrefixedClasses = $contentWithPrefixedClasses -replace $escapedClass, $prefixedClass
+    #     }
+    # }
+
     # Loop through the classes
     foreach ($class in $tailwindClasses) {
         # Check if the class has already been prefixed
         if ($prefixedClasses -contains $class) {
             continue
         }
-        # Regular expression pattern to match special characters
-        $Pattern = "([\.\^\$\*\+\?\{\}\[\]\\\|\(\)])"
- 
-        $escapedClass = $class -replace $Pattern, '\$1'
+        $escapedClass = Convert-ToEscapedClass -str $class
  
         $prefixedClass = ""
         if ($removePrefix) {
